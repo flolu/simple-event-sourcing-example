@@ -1,0 +1,31 @@
+{
+  "name": "simple-event-sourcing-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "tsc",
+    "build": "tsc --build",
+    "build:watch": "tsc --build --watch",
+    "start": "npx ts-node src/index.ts",
+    "start:watch": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "faker": "^4.1.0",
+    "shortid": "^2.2.14",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.6.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.1",
+    "@types/faker": "^4.1.5",
+    "@types/node": "^12.7.2",
+    "@types/shortid": "^0.0.29",
+    "nodemon": "^1.19.1"
+  }
+}
