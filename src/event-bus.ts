@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { Ivent } from './ideas/idea-entities';
+import { Ivent, IventData } from './event';
 
 const emitter = new EventEmitter();
 
@@ -8,7 +8,7 @@ export class EventBus {
     emitter.emit(topic, event.get());
   };
 
-  subscribe = (topic: string, cb: (data: any) => void): void => {
+  subscribe = (topic: string, cb: (data: IventData) => void): void => {
     emitter.on(topic, (data) => {
       cb(data);
     });

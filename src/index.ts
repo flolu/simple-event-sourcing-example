@@ -5,6 +5,7 @@ import { EventProducer } from './ideas/event-producer';
 import { IdeaCommandService } from './ideas/idea-command-service';
 import { EventBus } from './event-bus';
 import { IdeaConsumer } from './ideas/idea-consumer';
+import { IdeaView } from './ideas/idea-view';
 
 console.clear();
 const app = express();
@@ -13,9 +14,10 @@ const eventProducer = new EventProducer(eventBus);
 const commandService = new IdeaCommandService(eventProducer);
 const ideasResource = new IdeasResource(commandService, null);
 new IdeaConsumer(eventBus);
+new IdeaView(eventBus);
 
 app.get('/publish-idea', (_req, res) => {
-  const response = ideasResource.publishIdea({ title: faker.lorem.words(), desc: faker.lorem.paragraph() });
+  const response = ideasResource.publishIdea({ title: faker.lorem.words(3), desc: faker.lorem.words(7) });
   res.status(response.status).json(response.body);
 });
 

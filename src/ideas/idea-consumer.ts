@@ -7,7 +7,7 @@ export class IdeaConsumer {
 
   init = () => {
     this.eventBus.subscribe('ideas', (event) => {
-      console.log('got event in ideas topic', event);
+      console.log('got event in ideas topic: ', event.type);
     });
   };
 }

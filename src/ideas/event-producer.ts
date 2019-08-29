@@ -1,4 +1,4 @@
-import { Ivent } from './idea-entities';
+import { Ivent } from '../event';
 import { EventBus } from '../event-bus';
 
 export class EventProducer {

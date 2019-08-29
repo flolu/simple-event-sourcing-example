@@ -1,20 +1,10 @@
 import { IdeaInfo } from './idea-info';
+import { Ivent } from '../event';
 
-export class Ivent {
-  private timestamp: number;
-  private type: string;
-  private data: string;
-
-  constructor(type: string, data: any) {
-    this.timestamp = Date.now();
-    this.type = type;
-    this.data = data;
-  }
-
-  getTimestamp = () => this.timestamp;
-  getType = () => this.type;
-  getData = () => this.data;
-  get = () => ({ timestamp: this.timestamp, type: this.type, data: this.data });
+export interface Idea {
+  id: string;
+  title: string;
+  desc: string;
 }
 
 export class IdeaEvent extends Ivent {
