@@ -1,5 +1,8 @@
 import { Idea } from './idea-entities';
 import { EventBus } from '../event-bus';
+import { Logger } from '../logger';
+
+const logger = new Logger('[IdeaView] ->');
 
 export class IdeaView {
   private ideas: Idea[] = [];
@@ -15,8 +18,7 @@ export class IdeaView {
           this.ideas = [...this.ideas, event.data];
         }
       }
-      console.log('idea view changed to:');
-      console.log(this.ideas);
+      logger.info('changed to', this.ideas);
     });
   };
 }

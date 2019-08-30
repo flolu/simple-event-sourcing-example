@@ -1,4 +1,7 @@
 import { EventBus } from '../event-bus';
+import { Logger } from '../logger';
+
+const logger = new Logger('[IdeaConsumer] ->');
 
 export class IdeaConsumer {
   constructor(private eventBus: EventBus) {
@@ -7,7 +10,7 @@ export class IdeaConsumer {
 
   init = () => {
     this.eventBus.subscribe('ideas', (event) => {
-      console.log('got event in ideas topic: ', event.type);
+      logger.info('consumed event: ', event.type);
     });
   };
 }
