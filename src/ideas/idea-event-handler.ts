@@ -1,20 +1,19 @@
 import { EventBus } from '../event-bus';
 import { Logger } from '../logger';
 import { IdeaCommandService } from './idea-command-service';
-import { IdeaEventNames } from './idea-event-names';
+import { IdeaEventNames } from './events';
 
 const logger = new Logger('[IdeaEventHandler] ->');
 
 export class IdeaEventHandler {
-  constructor(private eventBus: EventBus, private ideaService: IdeaCommandService) {
+  constructor(private eventBus: EventBus, private commandService: IdeaCommandService) {
     this.eventBus.subscribe('ideas', (event) => {
       logger.debug('handle', event.type);
       switch (event.type) {
         case IdeaEventNames.CreateRequested: {
           if (Math.random() < 0.9) {
-            this.ideaService.acceptIdeaCreation(event.data.id);
+            this.commandService.acceptIdeaCreation(event.data.id);
           } else {
-            this.ideaService.rejectIdeaCreation(event.data.id, 'no no no, you cannot create this idea!');
           }
         }
       }
