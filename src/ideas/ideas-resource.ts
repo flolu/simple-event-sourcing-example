@@ -1,4 +1,5 @@
 import * as shortid from 'shortid';
+import * as faker from 'faker';
 import { Logger } from '../logger';
 import { IdeaCommandService } from './idea-command-service';
 import { IdeaInfo } from './idea';
@@ -6,13 +7,19 @@ import { IdeaView } from './idea-view';
 
 const logger = new Logger('[IdeasResource] ->');
 
+interface HttpRequest {
+  body: any;
+  params: any;
+}
+
 export class IdeasResource {
   constructor(private commandService: IdeaCommandService, private queryService: IdeaView) {
     this.queryService;
   }
 
-  publishIdea = ({ title, desc }: { title: string; desc: string }) => {
+  publishIdea = ({ body }: HttpRequest) => {
     logger.debug('publish idea');
+    const { title, desc } = body || { title: faker.lorem.words(3), desc: faker.lorem.words(7) };
     if (!(title && desc)) {
       return { status: 400, body: {} };
     }
@@ -21,8 +28,10 @@ export class IdeasResource {
     return { status: 202, body: { id } };
   };
 
-  editIdea = (id: string, { title, desc }: { title?: string; desc?: string }) => {
-    logger.debug('publish idea');
+  editIdea = ({ body, params }: HttpRequest) => {
+    logger.debug('edit idea');
+    const { title, desc } = body || { title: faker.lorem.words(3), desc: faker.lorem.words(7) };
+    const { id } = params;
     if (!(title || desc) || !id) {
       return { status: 400, body: {} };
     }
@@ -30,8 +39,9 @@ export class IdeasResource {
     return { status: 202, body: { id, title, desc } };
   };
 
-  deleteIdea = (id: string) => {
+  deleteIdea = ({ params }: HttpRequest) => {
     logger.debug('delete idea');
+    const { id } = params;
     if (!id) {
       return { status: 400, body: {} };
     }
@@ -49,7 +59,8 @@ export class IdeasResource {
     }
   };
 
-  getIdeaById = (id: string) => {
+  getIdeaById = ({ params }: HttpRequest) => {
+    const { id } = params;
     logger.debug('get idea by id', id);
     try {
       const idea: IdeaInfo = this.queryService.getIdeaById(id);

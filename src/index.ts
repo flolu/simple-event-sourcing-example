@@ -1,5 +1,4 @@
 import * as express from 'express';
-import * as faker from 'faker';
 import { IdeasResource } from './ideas/ideas-resource';
 import { EventProducer } from './ideas/event-producer';
 import { IdeaCommandService } from './ideas/idea-command-service';
@@ -18,36 +17,19 @@ const commandService = new IdeaCommandService(eventProducer, ideaView);
 const ideasResource = new IdeasResource(commandService, ideaView);
 new IdeaEventHandler(eventBus, commandService);
 
-// TODO abstraction
+const expressCallback = (controller: Function) => {
+  return (req: express.Request, res: express.Response) => {
+    logger.debug(req.path, req.param);
+    const response = controller({ body: req.body, params: req.params });
+    res.status(response.status).send(response.body);
+  };
+};
 
-app.get('/ideas/publish', (_req, res) => {
-  logger.debug('publish idea');
-  const response = ideasResource.publishIdea({ title: faker.lorem.words(3), desc: faker.lorem.words(7) });
-  res.status(response.status).json(response.body);
-});
+app.get('/ideas/publish', expressCallback(ideasResource.publishIdea));
+app.get('/ideas/update/:id', expressCallback(ideasResource.editIdea));
+app.get('/ideas/delete/:id', expressCallback(ideasResource.deleteIdea));
 
-app.get('/ideas/update/:id', (req, res) => {
-  logger.debug('update idea');
-  const response = ideasResource.editIdea(req.params.id, { title: faker.lorem.words(3), desc: faker.lorem.words(7) });
-  res.status(response.status).json(response.body);
-});
-
-app.get('/ideas/delete/:id', (req, res) => {
-  logger.debug('delete idea');
-  const response = ideasResource.deleteIdea(req.params.id);
-  res.status(response.status).json(response.body);
-});
-
-app.get('/ideas', (_req, res) => {
-  logger.debug('get ideas');
-  const response = ideasResource.getIdeas();
-  res.status(response.status).json(response.body);
-});
-
-app.get('/ideas/:id', (req, res) => {
-  logger.debug('get one idea');
-  const response = ideasResource.getIdeaById(req.params.id);
-  res.status(response.status).json(response.body);
-});
+app.get('/ideas', expressCallback(ideasResource.getIdeas));
+app.get('/ideas/:id', expressCallback(ideasResource.getIdeaById));
 
 app.listen(7777);
