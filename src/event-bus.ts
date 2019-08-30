@@ -8,13 +8,13 @@ const logger = new Logger('[EventBus] ->');
 
 export class EventBus {
   publish = (topic: string, event: Ivent) => {
-    logger.info('emit event');
+    logger.debug('emit event');
     emitter.emit(topic, event.get());
   };
 
   subscribe = (topic: string, cb: (data: IventData) => void): void => {
     emitter.on(topic, (data) => {
-      logger.info('listened to event in topic', topic, '->', data.type);
+      logger.debug('listened to event in topic', topic, '->', data.type);
       cb(data);
     });
   };
