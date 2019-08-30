@@ -1,6 +1,6 @@
 import { Logger } from '../logger';
 import { EventProducer } from './event-producer';
-import { CreateIdeaRequested, CreateIdeaAccepted, CreateIdeaRejected } from './events';
+import { CreateIdeaRequested, CreateIdeaAccepted, CreateIdeaRejected, IdeaDeleted, IdeaUpdated } from './events';
 import { IdeaInfo } from './idea';
 import { IdeaView } from './idea-view';
 
@@ -12,6 +12,16 @@ export class IdeaCommandService {
   requestToCreateIdea = (ideaInfo: IdeaInfo): void => {
     logger.debug('request to create idea');
     this.eventProducer.publish(new CreateIdeaRequested(ideaInfo));
+  };
+
+  editIdea = (id: string, payload: Partial<IdeaInfo>): void => {
+    logger.debug('edit idea', id);
+    this.eventProducer.publish(new IdeaUpdated(id, payload));
+  };
+
+  deleteIdea = (id: string): void => {
+    logger.debug('delete idea', id);
+    this.eventProducer.publish(new IdeaDeleted(id));
   };
 
   acceptIdeaCreation = (id: string): void => {

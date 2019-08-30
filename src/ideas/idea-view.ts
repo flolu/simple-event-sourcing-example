@@ -26,20 +26,30 @@ export class IdeaView {
           this.entities[event.data.id].rejectCreation();
           break;
         }
+        case IdeaEventNames.Updated: {
+          this.entities[event.data.id].updateIdea(event.data.payload);
+          break;
+        }
+        case IdeaEventNames.Deleted: {
+          this.entities[event.data.id].deleteIdea();
+          break;
+        }
       }
       logger.debug('updated', this.entities);
     });
   }
 
   getAllIdea = (): IdeaInfo[] => {
-    return Object.keys(this.entities).map((key) => this.entities[key].getInfo());
+    return Object.keys(this.entities)
+      .map((key) => this.entities[key].getInfo())
+      .filter((i) => !i.deleted);
   };
 
   getIdeaById = (id: string): IdeaInfo => {
     const idea: Idea = this.entities[id];
-    if (idea) {
-      return idea.getInfo();
+    if (!idea || idea.getInfo().deleted) {
+      throw new Error('idea with id ' + id + ' was not found');
     }
-    throw new Error('idea with id ' + id + ' was not found');
+    return idea.getInfo();
   };
 }

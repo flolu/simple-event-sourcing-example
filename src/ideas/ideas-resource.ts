@@ -21,6 +21,24 @@ export class IdeasResource {
     return { status: 202, body: { id } };
   };
 
+  editIdea = (id: string, { title, desc }: { title?: string; desc?: string }) => {
+    logger.debug('publish idea');
+    if (!(title || desc) || !id) {
+      return { status: 400, body: {} };
+    }
+    this.commandService.editIdea(id, { title, desc });
+    return { status: 202, body: { id, title, desc } };
+  };
+
+  deleteIdea = (id: string) => {
+    logger.debug('delete idea');
+    if (!id) {
+      return { status: 400, body: {} };
+    }
+    this.commandService.deleteIdea(id);
+    return { status: 202, body: { id } };
+  };
+
   getIdeas = () => {
     logger.debug('get ideas');
     try {
