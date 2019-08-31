@@ -7,7 +7,6 @@ export class EventStore {
 
   constructor(private eventProducer: EventProducer) {}
 
-  // TODO pass in event info instead
   addEvent = async (streamId: string, event: Ivent) => {
     if (!this.streams[streamId]) {
       this.streams[streamId] = [];
@@ -16,8 +15,7 @@ export class EventStore {
     this.eventProducer.publish(event);
   };
 
-  // TODO handle stream not existing
   public getStream = (streamId: string): EventInfo[] => {
-    return this.streams[streamId];
+    return this.streams[streamId] || [];
   };
 }

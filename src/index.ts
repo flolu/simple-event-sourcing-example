@@ -8,6 +8,8 @@ import { IdeaView } from './ideas/query/idea-view';
 import { Logger } from './logger';
 import { IdeaEventHandler } from './ideas/idea-event-handler';
 import { EventStore } from './event-store';
+import { replay } from './ideas/replay-events';
+import { Idea } from './ideas/idea';
 
 const logger = new Logger('[API] ->');
 const app = express();
@@ -40,7 +42,7 @@ app.get('/events/:id', async (req, res) => {
   res.send(stream);
 });
 app.get('/aggregate/:id', async (req, res) => {
-  const idea = await commandHandler.getLatestStateOfIdea(req.params.id);
+  const idea = replay(new Idea().getInfo(), eventStore.getStream(req.params.id));
   res.send(idea);
 });
 

@@ -29,7 +29,7 @@ export class IdeaCommandHandler {
 
   acceptIdeaCreation = async (id: string) => {
     logger.debug('accept to create idea', id);
-    const idea = await this.getLatestStateOfIdea(id);
+    const idea = replay(new Idea().getInfo(), this.eventStore.getStream(id));
     const event = new CreateIdeaAccepted(idea);
     this.eventStore.addEvent(id, event);
   };
@@ -38,12 +38,5 @@ export class IdeaCommandHandler {
     logger.debug('rejected to create idea', id);
     const event = new CreateIdeaRejected(id, reason);
     this.eventStore.addEvent(id, event);
-  };
-
-  // TODO move this to a better place
-  // TODO snapshots?
-  getLatestStateOfIdea = async (ideaId: string): Promise<IdeaInfo> => {
-    const stream = this.eventStore.getStream(ideaId);
-    return replay(new Idea().getInfo(), stream);
   };
 }
