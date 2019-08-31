@@ -8,6 +8,7 @@
     "tsc": "tsc",
     "build": "tsc --build",
     "build:watch": "tsc --build --watch",
+    "start:docker:dev": "docker-compose -f docker-compose.dev.yaml up --build",
     "start": "npx ts-node src/index.ts",
     "start:watch": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/index.ts"
   },
@@ -15,6 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "eventstore": "^1.15.0",
     "express": "^4.17.1",
     "faker": "^4.1.0",
     "pino": "^5.13.2",

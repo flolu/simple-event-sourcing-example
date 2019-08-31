@@ -1,4 +1,4 @@
-export interface IventData {
+export interface EventData {
   timestamp: number;
   type: string;
   data: any;

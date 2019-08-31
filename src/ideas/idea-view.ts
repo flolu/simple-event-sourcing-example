@@ -10,7 +10,6 @@ export class IdeaView {
   private entities: Entities<Idea> = {};
 
   constructor(private eventBus: EventBus) {
-    // TODO event typescript types (e.g. event: IdeaEvent)
     this.eventBus.subscribe('ideas', (event) => {
       switch (event.type) {
         case IdeaEventNames.CreateRequested: {
