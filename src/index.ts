@@ -15,7 +15,7 @@ const eventBus = new EventBus();
 const eventProducer = new EventProducer(eventBus);
 const eventStore = new EventStore(eventProducer);
 const ideaView = new IdeaView(eventBus);
-const commandService = new IdeaCommandService(ideaView, eventStore);
+const commandService = new IdeaCommandService(eventStore);
 const ideasResource = new IdeasResource(commandService, ideaView);
 new IdeaEventHandler(eventBus, commandService);
 
@@ -33,5 +33,10 @@ app.get('/ideas/delete/:id', expressCallback(ideasResource.deleteIdea));
 
 app.get('/ideas', expressCallback(ideasResource.getIdeas));
 app.get('/ideas/:id', expressCallback(ideasResource.getIdeaById));
+
+app.get('/events/:id', async (req, res) => {
+  const idea = await commandService.getLatestStateOfIdea(req.params.id);
+  res.send(idea.getInfo());
+});
 
 app.listen(3333);

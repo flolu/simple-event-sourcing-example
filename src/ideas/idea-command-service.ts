@@ -1,13 +1,12 @@
 import { Logger } from '../logger';
 import { CreateIdeaRequested, CreateIdeaAccepted, CreateIdeaRejected, IdeaDeleted, IdeaUpdated } from './events';
-import { IdeaInfo } from './idea';
-import { IdeaView } from './idea-view';
+import { IdeaInfo, Idea } from './idea';
 import { EventStore } from '../event-store';
 
 const logger = new Logger('[IdeaCommandService] ->');
 
 export class IdeaCommandService {
-  constructor(private queryService: IdeaView, private eventStore: EventStore) {}
+  constructor(private eventStore: EventStore) {}
 
   requestToCreateIdea = (ideaInfo: IdeaInfo): void => {
     logger.debug('request to create idea');
@@ -27,11 +26,10 @@ export class IdeaCommandService {
     this.eventStore.addEvent(id, event);
   };
 
-  acceptIdeaCreation = (id: string): void => {
+  acceptIdeaCreation = async (id: string) => {
     logger.debug('accept to create idea', id);
-    // TODO get idea from event store, not from read side!
-    const idea: IdeaInfo = this.queryService.getIdeaById(id);
-    const event = new CreateIdeaAccepted(idea);
+    const idea = await this.getLatestStateOfIdea(id);
+    const event = new CreateIdeaAccepted(idea.getInfo());
     this.eventStore.addEvent(id, event);
   };
 
@@ -39,5 +37,19 @@ export class IdeaCommandService {
     logger.debug('rejected to create idea', id);
     const event = new CreateIdeaRejected(id, reason);
     this.eventStore.addEvent(id, event);
+  };
+
+  // TODO move this to a better place
+  // TODO snapshots?
+  getLatestStateOfIdea = async (ideaId: string): Promise<Idea> => {
+    const stream = await this.eventStore.getStream(ideaId);
+    return this.calculateIdeaStateFromEvents(stream.events);
+  };
+  private calculateIdeaStateFromEvents = (events: any[], initialIdeaInfo?: IdeaInfo): Idea => {
+    const idea = new Idea(initialIdeaInfo);
+    for (const event of events) {
+      idea.reduce(event.payload);
+    }
+    return idea;
   };
 }

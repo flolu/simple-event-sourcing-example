@@ -14,6 +14,7 @@ export class IdeaEventHandler {
           if (Math.random() < 0.9) {
             this.commandService.acceptIdeaCreation(event.data.id);
           } else {
+            this.commandService.rejectIdeaCreation(event.data.id, 'no no no you can not create this idea!');
           }
         }
       }

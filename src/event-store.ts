@@ -19,7 +19,7 @@ export class EventStore {
     });
   };
 
-  private getStream = (streamId: string) => {
+  public getStream = (streamId: string): any => {
     return new Promise((resolve, reject) => {
       this.es.getEventStream(streamId, (err: any, stream: any) => {
         if (err) {
