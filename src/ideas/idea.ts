@@ -1,12 +1,15 @@
-import { IdeaEventNames } from './events';
-import { EventData } from '../event';
+export interface CreateIdeaPayload {
+  id: string;
+  title: string;
+  desc: string;
+}
 
 export interface IdeaInfo {
   id: string;
   title: string;
   desc: string;
-  created?: boolean;
-  deleted?: boolean;
+  created: boolean;
+  deleted: boolean;
 }
 
 export class Idea {
@@ -26,32 +29,6 @@ export class Idea {
     }
   }
 
-  reduce = (event: EventData) => {
-    switch (event.type) {
-      case IdeaEventNames.CreateRequested: {
-        const { id, title, desc } = event.data;
-        this.createIdea(id, title, desc);
-        break;
-      }
-      case IdeaEventNames.CreateAccepted: {
-        this.acceptCreation();
-        break;
-      }
-      case IdeaEventNames.CreateRejected: {
-        this.rejectCreation();
-        break;
-      }
-      case IdeaEventNames.Updated: {
-        this.updateIdea(event.data.payload);
-        break;
-      }
-      case IdeaEventNames.Deleted: {
-        this.deleteIdea();
-        break;
-      }
-    }
-  };
-
   getInfo = (): IdeaInfo => ({
     id: this.id,
     title: this.title,
@@ -59,17 +36,4 @@ export class Idea {
     created: this.created,
     deleted: this.deleted,
   });
-
-  private acceptCreation = () => (this.created = true);
-  private rejectCreation = () => (this.created = false);
-  private createIdea = (id: string, title: string, desc: string) => {
-    this.id = id;
-    this.title = title;
-    this.desc = desc;
-  };
-  private updateIdea = ({ title, desc }: Partial<IdeaInfo>) => {
-    this.title = title || this.title;
-    this.desc = desc || this.desc;
-  };
-  private deleteIdea = () => (this.deleted = true);
 }

@@ -1,9 +1,9 @@
 import * as shortid from 'shortid';
 import * as faker from 'faker';
 import { Logger } from '../logger';
-import { IdeaCommandService } from './idea-command-service';
+import { IdeaCommandHandler } from './idea-command-handler';
 import { IdeaInfo } from './idea';
-import { IdeaView } from './idea-view';
+import { IdeaView } from './query/idea-view';
 
 const logger = new Logger('[IdeasResource] ->');
 
@@ -12,8 +12,8 @@ interface HttpRequest {
   params: any;
 }
 
-export class IdeasResource {
-  constructor(private commandService: IdeaCommandService, private queryService: IdeaView) {
+export class IdeasApi {
+  constructor(private commandHandler: IdeaCommandHandler, private queryService: IdeaView) {
     this.queryService;
   }
 
@@ -24,7 +24,7 @@ export class IdeasResource {
       return { status: 400, body: {} };
     }
     const id: string = shortid();
-    this.commandService.requestToCreateIdea({ id, title, desc });
+    this.commandHandler.requestToCreateIdea({ id, title, desc });
     return { status: 202, body: { id } };
   };
 
@@ -35,7 +35,7 @@ export class IdeasResource {
     if (!(title || desc) || !id) {
       return { status: 400, body: {} };
     }
-    this.commandService.editIdea(id, { title, desc });
+    this.commandHandler.editIdea(id, { title, desc });
     return { status: 202, body: { id, title, desc } };
   };
 
@@ -45,7 +45,7 @@ export class IdeasResource {
     if (!id) {
       return { status: 400, body: {} };
     }
-    this.commandService.deleteIdea(id);
+    this.commandHandler.deleteIdea(id);
     return { status: 202, body: { id } };
   };
 

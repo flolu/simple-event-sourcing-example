@@ -1,4 +1,4 @@
-export interface EventData {
+export interface EventInfo {
   timestamp: number;
   type: string;
   data: any;

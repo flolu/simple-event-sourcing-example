@@ -4,6 +4,6 @@ import { IdeaInfo } from '../idea';
 
 export class IdeaUpdated extends Ivent {
   constructor(id: string, payload: Partial<IdeaInfo>) {
-    super(IdeaEventNames.Updated, { id, payload });
+    super(IdeaEventNames.Updated, { id, ...payload });
   }
 }

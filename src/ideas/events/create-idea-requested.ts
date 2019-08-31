@@ -1,9 +1,9 @@
 import { Ivent } from '../../event';
-import { IdeaInfo } from '../idea';
+import { CreateIdeaPayload } from '../idea';
 import { IdeaEventNames } from './idea-event-names';
 
 export class CreateIdeaRequested extends Ivent {
-  constructor(ideaInfo: IdeaInfo) {
+  constructor(ideaInfo: CreateIdeaPayload) {
     super(IdeaEventNames.CreateRequested, ideaInfo);
   }
 }

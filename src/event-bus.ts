@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { Ivent, EventData } from './event';
+import { Ivent, EventInfo } from './event';
 import { Logger } from './logger';
 
 const emitter = new EventEmitter();
@@ -12,7 +12,7 @@ export class EventBus {
     emitter.emit(topic, event.get());
   };
 
-  subscribe = (topic: string, cb: (data: EventData) => void): void => {
+  subscribe = (topic: string, cb: (data: EventInfo) => void): void => {
     emitter.on(topic, (data) => {
       logger.debug('listened to event in topic', topic, '->', data.type);
       cb(data);
