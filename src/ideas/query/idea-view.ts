@@ -6,6 +6,7 @@ import { apply } from '../apply-event';
 
 const logger = new Logger('[IdeaView] ->');
 
+// FIXME if read model is down and new events are published... how to load those events, that haven't been processed yet?
 export class IdeaView {
   private entities: Entities<IdeaInfo> = {};
 
