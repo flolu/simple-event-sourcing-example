@@ -1,6 +1,6 @@
-import { IdeaInfo } from './idea';
 import { EventInfo } from '../event';
 import { IdeaEventNames } from './events';
+import { IdeaInfo } from './idea';
 
 export const apply = (state: IdeaInfo, event: EventInfo): IdeaInfo => {
   let updated: IdeaInfo = { ...state, lastEventId: event.id };
@@ -22,6 +22,8 @@ export const apply = (state: IdeaInfo, event: EventInfo): IdeaInfo => {
       return { ...updated, title: event.data.title || state.title, desc: event.data.desc || state.desc };
     case IdeaEventNames.Deleted:
       return { ...updated, deleted: true };
+    case IdeaEventNames.Tombstone:
+      return { ...updated, title: '', desc: '', created: false, deleted: true };
     default:
       return { ...updated };
   }

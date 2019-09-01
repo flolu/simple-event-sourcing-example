@@ -31,6 +31,7 @@ const expressCallback = (controller: Function) => {
 app.get('/ideas/publish', expressCallback(ideasApi.publishIdea));
 app.get('/ideas/update/:id', expressCallback(ideasApi.editIdea));
 app.get('/ideas/delete/:id', expressCallback(ideasApi.deleteIdea));
+app.get('/ideas/forget/:id', expressCallback(ideasApi.forgetIdea));
 
 app.get('/ideas', expressCallback(ideasApi.getIdeas));
 app.get('/ideas/:id', expressCallback(ideasApi.getIdeaById));

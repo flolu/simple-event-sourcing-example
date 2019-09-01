@@ -49,6 +49,16 @@ export class IdeasApi {
     return { status: 202, body: { id } };
   };
 
+  forgetIdea = ({ params }: HttpRequest) => {
+    logger.debug('forget idea');
+    const { id } = params;
+    if (!id) {
+      return { status: 400, body: {} };
+    }
+    this.commandHandler.forgetIdea(id);
+    return { status: 202, body: { id } };
+  };
+
   getIdeas = () => {
     logger.debug('get ideas');
     try {

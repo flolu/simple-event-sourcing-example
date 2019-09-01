@@ -40,6 +40,13 @@ export class EventStore {
     }
   };
 
+  clearStream = (streamId: string, tombstoneEvent: Ivent): void => {
+    logger.debug('clear stream', streamId);
+    this.streams[streamId] = [];
+    this.snapshots[streamId] = [];
+    this.addEvent(streamId, tombstoneEvent);
+  };
+
   private getStreamAfterSnapshot = (streamId: string, lastEventId: string): EventInfo[] => {
     return this.streams[streamId].slice(this.streams[streamId].map((e) => e.id).indexOf(lastEventId));
   };

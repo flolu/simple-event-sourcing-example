@@ -2,6 +2,7 @@ import { EventStore } from '../event-store';
 import { Logger } from '../logger';
 import { CreateIdeaAccepted, CreateIdeaRejected, CreateIdeaRequested, IdeaDeleted, IdeaUpdated } from './events';
 import { CreateIdeaPayload, IdeaInfo } from './idea';
+import { IdeaTombstone } from './events/idea-tombstone';
 
 const logger = new Logger('[IdeaCommandService] ->');
 
@@ -22,6 +23,10 @@ export class IdeaCommandHandler {
 
   deleteIdea = (id: string): void => {
     logger.debug('delete idea', id);
+    const idea = this.eventStore.getCurrentAggregate(id);
+    if (!idea) {
+      throw new Error('cannot delete idea with id: ' + id + ' (it does not exist)');
+    }
     const event = new IdeaDeleted(id);
     this.eventStore.addEvent(id, event);
   };
@@ -37,5 +42,15 @@ export class IdeaCommandHandler {
     logger.debug('rejected to create idea', id);
     const event = new CreateIdeaRejected(id, reason);
     this.eventStore.addEvent(id, event);
+  };
+
+  forgetIdea = (id: string): void => {
+    logger.debug('forget idea', id);
+    const idea = this.eventStore.getCurrentAggregate(id);
+    if (!idea) {
+      throw new Error('cannot forget idea with id: ' + id + ' (it does not exist)');
+    }
+    const event = new IdeaTombstone(id);
+    this.eventStore.clearStream(id, event);
   };
 }

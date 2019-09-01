@@ -4,4 +4,5 @@ export enum IdeaEventNames {
   CreateRejected = 'CreateIdeaRejected',
   Updated = 'IdeaUpdated',
   Deleted = 'IdeaDeleted',
+  Tombstone = 'Tombstone',
 }
