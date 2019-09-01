@@ -1,8 +1,7 @@
-import { Logger } from '../logger';
-import { CreateIdeaRequested, CreateIdeaAccepted, CreateIdeaRejected, IdeaDeleted, IdeaUpdated } from './events';
-import { IdeaInfo, Idea, CreateIdeaPayload } from './idea';
 import { EventStore } from '../event-store';
-import { replay } from './replay-events';
+import { Logger } from '../logger';
+import { CreateIdeaAccepted, CreateIdeaRejected, CreateIdeaRequested, IdeaDeleted, IdeaUpdated } from './events';
+import { CreateIdeaPayload, IdeaInfo } from './idea';
 
 const logger = new Logger('[IdeaCommandService] ->');
 
@@ -29,7 +28,7 @@ export class IdeaCommandHandler {
 
   acceptIdeaCreation = async (id: string) => {
     logger.debug('accept to create idea', id);
-    const idea = replay(new Idea().getInfo(), this.eventStore.getStream(id));
+    const idea = this.eventStore.getCurrentAggregate(id);
     const event = new CreateIdeaAccepted(idea);
     this.eventStore.addEvent(id, event);
   };

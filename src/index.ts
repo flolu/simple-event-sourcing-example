@@ -8,8 +8,6 @@ import { IdeaView } from './ideas/query/idea-view';
 import { Logger } from './logger';
 import { IdeaEventHandler } from './ideas/idea-event-handler';
 import { EventStore } from './event-store';
-import { replay } from './ideas/replay-events';
-import { Idea } from './ideas/idea';
 
 const logger = new Logger('[API] ->');
 const app = express();
@@ -37,13 +35,10 @@ app.get('/ideas/delete/:id', expressCallback(ideasApi.deleteIdea));
 app.get('/ideas', expressCallback(ideasApi.getIdeas));
 app.get('/ideas/:id', expressCallback(ideasApi.getIdeaById));
 
-app.get('/events/:id', async (req, res) => {
-  const stream = eventStore.getStream(req.params.id);
-  res.send(stream);
-});
+app.listen(3333);
+
+// DEBUG
 app.get('/aggregate/:id', async (req, res) => {
-  const idea = replay(new Idea().getInfo(), eventStore.getStream(req.params.id));
+  const idea = eventStore.getCurrentAggregate(req.params.id);
   res.send(idea);
 });
-
-app.listen(3333);

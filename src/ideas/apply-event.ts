@@ -3,10 +3,11 @@ import { EventInfo } from '../event';
 import { IdeaEventNames } from './events';
 
 export const apply = (state: IdeaInfo, event: EventInfo): IdeaInfo => {
+  let updated: IdeaInfo = { ...state, lastEventId: event.id };
   switch (event.type) {
     case IdeaEventNames.CreateRequested:
       return {
-        ...state,
+        ...updated,
         id: event.data.id,
         title: event.data.title,
         desc: event.data.desc,
@@ -14,14 +15,14 @@ export const apply = (state: IdeaInfo, event: EventInfo): IdeaInfo => {
         deleted: false,
       };
     case IdeaEventNames.CreateAccepted:
-      return { ...state, created: true };
+      return { ...updated, created: true };
     case IdeaEventNames.CreateRejected:
-      return { ...state, created: false };
+      return { ...updated, created: false };
     case IdeaEventNames.Updated:
-      return { ...state, title: event.data.title || state.title, desc: event.data.desc || state.desc };
+      return { ...updated, title: event.data.title || state.title, desc: event.data.desc || state.desc };
     case IdeaEventNames.Deleted:
-      return { ...state, deleted: true };
+      return { ...updated, deleted: true };
     default:
-      return { ...state };
+      return { ...updated };
   }
 };

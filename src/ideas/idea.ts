@@ -11,6 +11,7 @@ export interface IdeaInfo {
   created: boolean;
   deleted: boolean;
   version: number;
+  lastEventId: string;
 }
 
 export class Idea {
@@ -20,6 +21,7 @@ export class Idea {
   private created: boolean = false;
   private deleted: boolean = false;
   private version: number = 0;
+  private lastEventId: string = '';
 
   constructor(ideaInfo?: IdeaInfo) {
     if (ideaInfo) {
@@ -28,6 +30,7 @@ export class Idea {
       this.desc = ideaInfo.desc;
       this.created = ideaInfo.created || this.created;
       this.deleted = ideaInfo.deleted || this.deleted;
+      this.lastEventId = ideaInfo.lastEventId || this.lastEventId;
     }
   }
 
@@ -38,5 +41,6 @@ export class Idea {
     created: this.created,
     deleted: this.deleted,
     version: this.version,
+    lastEventId: this.lastEventId,
   });
 }

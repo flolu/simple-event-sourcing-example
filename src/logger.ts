@@ -3,8 +3,8 @@ import * as pino from 'pino';
 export class Logger {
   private logger: pino.Logger;
 
-  constructor(private prefix: string = '', prettyPrint: boolean = true, level: string = process.env.LEVEL || 'info') {
-    const options: pino.LoggerOptions = { prettyPrint, level };
+  constructor(private prefix: string = '', level: string = process.env.LEVEL || 'info') {
+    const options: pino.LoggerOptions = { prettyPrint: true, level };
     this.logger = pino(options);
     this.debug('logger initialized', options);
   }
