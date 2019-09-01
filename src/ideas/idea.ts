@@ -4,15 +4,18 @@ export interface CreateIdeaPayload {
   desc: string;
 }
 
-export interface IdeaInfo {
+export interface PublicIdeaInfo {
   id: string;
-  title: string;
-  desc: string;
-  created: boolean;
   deleted: boolean;
   version: number;
   lastEventId: string;
 }
+export interface PrivateIdeaInfo {
+  title: string;
+  desc: string;
+  created: boolean;
+}
+export interface IdeaInfo extends PublicIdeaInfo, PrivateIdeaInfo {}
 
 export class Idea {
   private id: string = '';

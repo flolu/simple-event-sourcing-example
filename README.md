@@ -41,13 +41,19 @@ _in progress_
 
 > for the sake of the users' right to be forgotten
 
-tombstone events
+When a stream should be deleted we first of all remove all events inside the stream and append a tombstone event. Other services such as the query side can listen to the tombstone event and clear up its data.
 
-public / private data
+_TODO_ splitting public / private data (because some information just can't be deleted)
 
 ### 2.4 Command Query Responsibility Segregation
 
+To handle CQRS, I have to services: one that mutates the event store and one that just consumes events that happened in the past to update a materialized view of the current state.
+
 ### 2.5 Optimistic Concurrency
+
+https://youtu.be/GzrZworHpIk?t=1028
+
+When processing a new command, we perform validation with the latest, computed aggregate. In the time frame between computing the latest aggregate and actually committing the event(s), new events might be appended to the event stream. That's why we keep track of the `latestEventId`. When adding the event, the `latestEventId` of the aggregate used for validation and the actual last event in the stream have to match. Otherwise the command handler throws an error.
 
 ### 2.6 Event Schema
 

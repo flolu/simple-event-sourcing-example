@@ -7,7 +7,7 @@ import { Logger } from './logger';
 
 const logger = new Logger('[EventStore] ->');
 
-// FIXME create generic eventstore that can be extended
+// FIXME multiple aggregates in one stream?
 export class EventStore {
   private streams: Entities<EventInfo[]> = {};
   private snapshots: Entities<IdeaInfo[]> = {};
@@ -16,9 +16,14 @@ export class EventStore {
 
   constructor(private eventProducer: EventProducer) {}
 
-  addEvent = async (streamId: string, event: Ivent) => {
+  // FIXME change to add multiple events
+  addEvent = async (streamId: string, event: Ivent, lastEventId: string) => {
     if (!this.streams[streamId]) {
-      this.streams[streamId] = [];
+      throw new Error(`stream with id: ${streamId} does not exist`);
+    }
+    const lastEvent = this.getLastEventFromStream(streamId);
+    if (lastEvent.id !== lastEventId) {
+      throw new Error('cannot perform command because a newer version exists');
     }
     this.streams[streamId] = [...this.streams[streamId], event.get()];
     if (this.streams[streamId].length % this.minNumberOfEventsToCreateSnapshot === 0) {
@@ -26,6 +31,15 @@ export class EventStore {
     }
     this.eventProducer.publish(event);
     logger.debug('added event', event);
+  };
+
+  createStream = (streamId: string, event: Ivent) => {
+    if (this.streams[streamId]) {
+      throw new Error(`tried to create stream with id: ${streamId}, but it already exists`);
+    }
+    this.streams[streamId] = [event.get()];
+    this.eventProducer.publish(event);
+    logger.debug('created stream with event', event);
   };
 
   getCurrentAggregate = (streamId: string): IdeaInfo => {
@@ -40,12 +54,19 @@ export class EventStore {
     }
   };
 
-  clearStream = (streamId: string, tombstoneEvent: Ivent): void => {
+  clearStream = (streamId: string, tombstoneEvent: Ivent, lastEventId: string): void => {
     logger.debug('clear stream', streamId);
+    const lastEvent = this.getLastEventFromStream(streamId);
+    if (lastEvent.id !== lastEventId) {
+      throw new Error('cannot perform command because a newer version exists');
+    }
     this.streams[streamId] = [];
     this.snapshots[streamId] = [];
-    this.addEvent(streamId, tombstoneEvent);
+    this.eventProducer.publish(tombstoneEvent);
   };
+
+  private getLastEventFromStream = (streamId: string): EventInfo =>
+    this.streams[streamId][this.streams[streamId].length - 1];
 
   private getStreamAfterSnapshot = (streamId: string, lastEventId: string): EventInfo[] => {
     return this.streams[streamId].slice(this.streams[streamId].map((e) => e.id).indexOf(lastEventId));
